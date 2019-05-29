@@ -1,7 +1,4 @@
 #include <FastLED.h>
-#include "web_api.h"
-#include "web_gui.h"
-
 
 FASTLED_USING_NAMESPACE
 
@@ -19,10 +16,14 @@ CRGB leds_side[NUM_LEDS_SIDE];
 #define NUM_LEDS (NUM_LEDS_SIDE + NUM_LEDS_FRONT)
 CRGB *leds[NUM_LEDS];
 
+#define STATUS_LED 5
+
 #define BRIGHTNESS          96
 #define FRAMES_PER_SECOND  30
 
 #include "patterns.h"
+#include "web_socket.h"
+#include "web_gui.h"
 
 void fillLedArray() {
 #ifdef DEBUG
@@ -54,7 +55,10 @@ void setup() {
   Serial.println("Holiday Lights");
 #endif
 
-  delay(3000); // 3 second delay for recovery
+
+  pinMode(STATUS_LED, OUTPUT);
+
+  setupWifi(); // some second delay for recovery
 
   fillLedArray();
 #ifdef DEBUG
@@ -73,6 +77,10 @@ void setup() {
   Serial.print("  set brightness: ");
   Serial.println(BRIGHTNESS);
 #endif
+
+  setupWebPage();
+
+  setupWebSocket();
 }
 
 void loop()
@@ -95,4 +103,7 @@ void loop()
   EVERY_N_SECONDS( 10 ) {
     nextPattern();  // change patterns periodically
   }
+  
+  webSocketLoop();
+  webServerLoop();
 }
