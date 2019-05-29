@@ -5,7 +5,15 @@ WiFiServer server(80);
 String header;
 
 void setupWebPage() {
+#ifdef DEBUG
+  Serial.print("Setup Web Page");
+#endif
+
   server.begin();
+  
+#ifdef DEBUG
+  Serial.println("done");
+#endif
 }
 
 void webServerLoop() {

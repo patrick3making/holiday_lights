@@ -38,6 +38,14 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
 
 void setupWebSocket() {
   // start webSocket server
+#ifdef DEBUG
+  Serial.print("Setup Web Socket");
+#endif
+
   webSocket.begin();
   webSocket.onEvent(webSocketEvent);
+  
+#ifdef DEBUG
+  Serial.println("done");
+#endif
 }

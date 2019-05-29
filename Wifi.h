@@ -6,6 +6,9 @@ const char* ssid     = "SSID";
 const char* password = "Password";
 
 void setupWifi(){
+#ifdef DEBUG
+  Serial.print("Setup WiFi");
+#endif
   
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
