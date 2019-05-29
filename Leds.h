@@ -40,3 +40,25 @@ void setupLeds(){
   Serial.println("complete");
 #endif
 }
+
+void ledsLoop(){
+  // Call the current pattern function once, updating the 'leds' array
+  gPatterns[gCurrentPatternNumber]();
+
+  // send the 'leds' array out to the actual LED strip
+  FastLED.show();
+
+#ifndef MAX_SPEED
+  // insert a delay to keep the framerate modest
+  FastLED.delay(1000 / FRAMES_PER_SECOND);
+#endif
+
+  // do some periodic updates
+  EVERY_N_MILLISECONDS( 20 ) {
+    gHue++;  // slowly cycle the "base color" through the rainbow
+  }
+  EVERY_N_SECONDS( 10 ) {
+    nextPattern();  // change patterns periodically
+  }
+  
+}

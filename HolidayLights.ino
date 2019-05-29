@@ -8,8 +8,10 @@ FASTLED_USING_NAMESPACE
 #define THING_BOARD_BUTTON  0
 #define THING_BOARD_LED     5
 #define PSU_CONTROL_PIN     13
-#define DATA_PIN_FRONT      32
-#define DATA_PIN_SIDE       33
+#define DATA_PIN_FRONT      18
+#define DATA_PIN_SIDE       23
+#define IIC_CLK             22
+#define IIC_DATA            21
 
 /*
  * Precompiler settings
@@ -34,8 +36,8 @@ CRGB *leds[NUM_LEDS];
 /*
  * Include other files
  */
-#include "Leds.h"
 #include "patterns.h"
+#include "Leds.h"
 #include "Wifi.h"
 #include "web_gui.h"
 #include "web_socket.h"
@@ -60,27 +62,25 @@ void setup() {
   setupWebSocket();
 }
 
+void powerSupplyOn(){
+  digitalWrite(PSU_CONTROL_PIN, LOW);
+  
+#ifdef DEBUG
+  Serial.println("PSU On");
+#endif
+}
+
+void powerSupplyOff(){
+  digitalWrite(PSU_CONTROL_PIN, HIGH);
+  
+#ifdef DEBUG
+  Serial.println("PSU Off");
+#endif
+}
+
 void loop()
 {
-  // Call the current pattern function once, updating the 'leds' array
-  gPatterns[gCurrentPatternNumber]();
-
-  // send the 'leds' array out to the actual LED strip
-  FastLED.show();
-
-#ifndef MAX_SPEED
-  // insert a delay to keep the framerate modest
-  FastLED.delay(1000 / FRAMES_PER_SECOND);
-#endif
-
-  // do some periodic updates
-  EVERY_N_MILLISECONDS( 20 ) {
-    gHue++;  // slowly cycle the "base color" through the rainbow
-  }
-  EVERY_N_SECONDS( 10 ) {
-    nextPattern();  // change patterns periodically
-  }
-  
+  ledsLoop();  
   webSocketLoop();
   webServerLoop();
 }
