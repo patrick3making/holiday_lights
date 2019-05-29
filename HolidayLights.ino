@@ -36,9 +36,9 @@ CRGB *leds[NUM_LEDS];
  */
 #include "Leds.h"
 #include "patterns.h"
+#include "Wifi.h"
 #include "web_gui.h"
 #include "web_socket.h"
-#include "Wifi.h"
 
 
 void setup() {
@@ -47,11 +47,13 @@ void setup() {
   Serial.println("Holiday Lights");
 #endif
 
-  pinMode(STATUS_LED, OUTPUT);
+  pinMode(THING_BOARD_LED, OUTPUT);
+  pinMode(THING_BOARD_BUTTON, INPUT_PULLUP);  
+  pinMode(PSU_CONTROL_PIN, OUTPUT);
 
   setupWifi(); // some second delay for recovery
 
-  
+  setupLeds();
 
   setupWebPage();
 

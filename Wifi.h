@@ -12,9 +12,9 @@ void setupWifi(){
   
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
-    digitalWrite(STATUS_LED, LOW);
+    digitalWrite(THING_BOARD_LED, LOW);
     delay(250);
-    digitalWrite(STATUS_LED, HIGH);
+    digitalWrite(THING_BOARD_LED, HIGH);
     delay(250);
     Serial.print(".");
   }
