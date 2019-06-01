@@ -53,13 +53,13 @@ void setup() {
   pinMode(THING_BOARD_BUTTON, INPUT_PULLUP);  
   pinMode(PSU_CONTROL_PIN, OUTPUT);
 
-  setupWifi(); // some second delay for recovery
-
-  setupLeds();
+  setupWifi(); // some delay for WS2812 recovery
 
   setupWebPage();
 
   setupWebSocket();
+
+  setupLeds();
 }
 
 void powerSupplyOn(){
