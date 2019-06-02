@@ -3,8 +3,8 @@
 FASTLED_USING_NAMESPACE
 
 /*
- * Pin definitions
- */
+   Pin definitions
+*/
 #define THING_BOARD_BUTTON  0
 #define THING_BOARD_LED     5
 #define PSU_CONTROL_PIN     13
@@ -14,8 +14,8 @@ FASTLED_USING_NAMESPACE
 #define IIC_DATA            21
 
 /*
- * Precompiler settings
- */
+   Precompiler settings
+*/
 #define BRIGHTNESS          96
 #define FRAMES_PER_SECOND   30
 #define MAX_SPEED
@@ -27,15 +27,17 @@ FASTLED_USING_NAMESPACE
 #define DEBUG
 
 /*
- * Global Variables
- */
+   Global Variables
+*/
 CRGB leds_front[NUM_LEDS_FRONT];
 CRGB leds_side[NUM_LEDS_SIDE];
 CRGB *leds[NUM_LEDS];
+bool powerOn = false;
+long powerCycleTime;
 
 /*
- * Include other files
- */
+   Include other files
+*/
 #include "patterns.h"
 #include "Leds.h"
 #include "Wifi.h"
@@ -44,13 +46,14 @@ CRGB *leds[NUM_LEDS];
 
 
 void setup() {
+  powerCycleTime = millis();
 #ifdef DEBUG
   Serial.begin(115200);
   Serial.println("Holiday Lights");
 #endif
 
   pinMode(THING_BOARD_LED, OUTPUT);
-  pinMode(THING_BOARD_BUTTON, INPUT_PULLUP);  
+  pinMode(THING_BOARD_BUTTON, INPUT_PULLUP);
   pinMode(PSU_CONTROL_PIN, OUTPUT);
 
   setupWifi(); // some delay for WS2812 recovery
@@ -62,25 +65,44 @@ void setup() {
   setupLeds();
 }
 
-void powerSupplyOn(){
-  digitalWrite(PSU_CONTROL_PIN, LOW);
-  
+void powerSupplyOn() {
+  if (!powerOn) {
+    digitalWrite(PSU_CONTROL_PIN, LOW);
+    powerCycleTime = millis();
+
 #ifdef DEBUG
-  Serial.println("PSU On");
+    Serial.println("PSU On");
 #endif
+  }
 }
 
-void powerSupplyOff(){
-  digitalWrite(PSU_CONTROL_PIN, HIGH);
-  
+void powerSupplyOff() {
+  if (powerOn) {
+    digitalWrite(PSU_CONTROL_PIN, HIGH);
+    powerCycleTime = millis();
+
 #ifdef DEBUG
-  Serial.println("PSU Off");
+    Serial.println("PSU Off");
 #endif
+  }
+}
+
+void setPsu() {
+  // don't toggle power within less than 3 seconds
+  if ( millis() - powerCycleTime > 3000) {   
+    if (powerOn) {
+      powerSupplyOn();
+    }
+    else {
+      powerSupplyOff();
+    }
+  }
 }
 
 void loop()
 {
-  ledsLoop();  
+  ledsLoop();
   webSocketLoop();
   webServerLoop();
+  setPsu();
 }
