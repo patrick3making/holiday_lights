@@ -47,10 +47,8 @@ long powerCycleTime;
 
 void setup() {
   powerCycleTime = millis();
-#ifdef DEBUG
   Serial.begin(115200);
   Serial.println("Holiday Lights");
-#endif
 
   pinMode(THING_BOARD_LED, OUTPUT);
   pinMode(THING_BOARD_BUTTON, INPUT_PULLUP);
@@ -89,7 +87,7 @@ void powerSupplyOff() {
 
 void setPsu() {
   // don't toggle power within less than 3 seconds
-  if ( millis() - powerCycleTime > 3000) {   
+  if ( millis() - powerCycleTime > 3000) {
     if (powerOn) {
       powerSupplyOn();
     }

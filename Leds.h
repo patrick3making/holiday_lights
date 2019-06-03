@@ -23,7 +23,7 @@ void fillLedArray() {
 #endif
 }
 
-void setupLeds(){
+void setupLeds() {
   fillLedArray();
 #ifdef DEBUG
   Serial.print("Setup LEDs");
@@ -41,7 +41,7 @@ void setupLeds(){
 #endif
 }
 
-void ledsLoop(){
+void ledsLoop() {
   // Call the current pattern function once, updating the 'leds' array
   gPatterns[gCurrentPatternNumber]();
 
@@ -57,8 +57,5 @@ void ledsLoop(){
   EVERY_N_MILLISECONDS( 20 ) {
     gHue++;  // slowly cycle the "base color" through the rainbow
   }
-  EVERY_N_SECONDS( 10 ) {
-    nextPattern();  // change patterns periodically
-  }
-  
+
 }

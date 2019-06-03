@@ -51,6 +51,7 @@ void juggle() {
 }
 
 SimplePatternList gPatterns = { confetti, sinelon, juggle, bpm };
+String gPatternNames[] = { "confetti", "sinelon", "juggle", "bpm" };
 
 void nextPattern()
 {

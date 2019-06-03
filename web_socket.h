@@ -28,7 +28,12 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
       if (payload[0] == '#') {
         // decode rgb data
         uint32_t rgb = (uint32_t) strtol((const char *) &payload[1], NULL, 16);
-//        showLEDColor(rgb);
+        //        showLEDColor(rgb);
+      }
+      else if (payload[0] == '@') {
+        // decode data
+        uint32_t pattern = (uint32_t) strtol((const char *) &payload[1], NULL, 16);
+        gCurrentPatternNumber = pattern;
       }
 
       break;
@@ -44,7 +49,7 @@ void setupWebSocket() {
 
   webSocket.begin();
   webSocket.onEvent(webSocketEvent);
-  
+
 #ifdef DEBUG
   Serial.println("done");
 #endif
