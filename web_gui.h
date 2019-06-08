@@ -52,7 +52,7 @@ void webPrintHtmlHead(WiFiClient *client) {
 }
 
 String htmlPatternSelector() {
-  String selectorHtml = "<select onchange=sendPatternSelection(this.value)>";
+  String selectorHtml = "<br/><p>Pattern Selector</p><select onchange=sendPatternSelection(this.value)>";
 
   for (int p = 0; p < ARRAY_SIZE( gPatterns); p++) {
     selectorHtml += "<option value=\"" + String(p) + "\"";
@@ -67,8 +67,8 @@ String htmlPatternSelector() {
 }
 
 void webPrintHtmlBody(WiFiClient *client) {
-  client->print("<body>LED Control:<br/>\
-  <br/><input class=\"jscolor {closable:true,closeText:'Close'}\" onchange=\"sendRGB(this.jscolor)\"  value=\"398085\">\
+  client->print("<body><h1>LED Control</h1><br/>\
+  <p>Color picker</p><input class=\"jscolor {closable:true,closeText:'Close'}\" onchange=\"sendRGB(this.jscolor)\"  value=\"398085\">\
   ");
   client->print(htmlPatternSelector());
   client->println("\

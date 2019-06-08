@@ -21,8 +21,8 @@ FASTLED_USING_NAMESPACE
 #define MAX_SPEED
 #define LED_TYPE            WS2812
 #define COLOR_ORDER         GRB
-#define NUM_LEDS_FRONT      300
-#define NUM_LEDS_SIDE       300
+#define NUM_LEDS_FRONT      36
+#define NUM_LEDS_SIDE       36
 #define NUM_LEDS (NUM_LEDS_SIDE + NUM_LEDS_FRONT)
 #define DEBUG
 
@@ -64,7 +64,7 @@ void setup() {
 }
 
 void powerSupplyOn() {
-  if (!powerOn) {
+  if (digitalRead(PSU_CONTROL_PIN) == HIGH) {
     digitalWrite(PSU_CONTROL_PIN, LOW);
     powerCycleTime = millis();
 
@@ -75,7 +75,7 @@ void powerSupplyOn() {
 }
 
 void powerSupplyOff() {
-  if (powerOn) {
+  if (digitalRead(PSU_CONTROL_PIN) == LOW) {
     digitalWrite(PSU_CONTROL_PIN, HIGH);
     powerCycleTime = millis();
 
@@ -88,6 +88,15 @@ void powerSupplyOff() {
 void setPsu() {
   // don't toggle power within less than 3 seconds
   if ( millis() - powerCycleTime > 3000) {
+    if (digitalRead(THING_BOARD_BUTTON) == LOW) {
+      //delay(10);
+      powerOn = !powerOn;
+      powerCycleTime = millis();
+#ifdef DEBUG
+      Serial.print("Button press Power State: ");
+      Serial.println(powerOn);
+#endif
+    }
     if (powerOn) {
       powerSupplyOn();
     }
