@@ -1,5 +1,6 @@
-//#include <mdns.h>
+#include <ESPmDNS.h>
 #include <WiFi.h>
+#include <WiFiClient.h>
 #include "secrets.h"
 
 // Network credentials in secrets.h
@@ -25,8 +26,8 @@ void setupWifi() {
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
 
-  //  if(MDNS.begin("esp32")) {
-  //      Serial.println("MDNS responder started");
-  //  }
+  if (MDNS.begin("holidaylights")) {
+    Serial.println("MDNS responder started");
+  }
 
 }

@@ -41,7 +41,7 @@ long powerCycleTime;
 #include "patterns.h"
 #include "Leds.h"
 #include "Wifi.h"
-#include "web_gui.h"
+#include "web_server.h"
 #include "web_socket.h"
 
 
@@ -56,7 +56,7 @@ void setup() {
 
   setupWifi(); // some delay for WS2812 recovery
 
-  setupWebPage();
+  setupWebServer();
 
   setupWebSocket();
 
