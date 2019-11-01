@@ -21,6 +21,20 @@ void confetti()
   *leds[pos] += CHSV( gHue + random8(64), 200, 255);
 }
 
+void halloweenconfetti()
+{
+  int hue = 32;
+  int chance = random(100);
+  if (chance == 99)
+    hue = 192;
+  else if (chance = 88)
+    hue = 96;
+  // random colored speckles that blink in and fade smoothly
+  fadePointerArrayToBlackBy(10);
+  int pos = random16(NUM_LEDS);
+  *leds[pos] += CHSV( hue, 200, 255);
+}
+
 void sinelon()
 {
   // a colored dot sweeping back and forth, with fading trails
@@ -51,7 +65,7 @@ void juggle() {
 }
 
 SimplePatternList gPatterns = { confetti, sinelon, juggle, bpm };
-String gPatternNames[] = { "confetti", "sinelon", "juggle", "bpm" };
+String gPatternNames[] = { "confetti", "sinelon", "juggle", "bpm", "halloweenconfetti" };
 
 void nextPattern()
 {

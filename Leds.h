@@ -1,4 +1,3 @@
-
 void fillLedArray() {
 #ifdef DEBUG
   Serial.print("  fill array with pointers...");
@@ -41,9 +40,13 @@ void setupLeds() {
 #endif
 }
 
-void ledsLoop() {
-  // Call the current pattern function once, updating the 'leds' array
-  gPatterns[gCurrentPatternNumber]();
+void ledsLoop(uint8_t singlePattern) {
+  if (singlePattern == 255) {
+    gPatterns[gCurrentPatternNumber]();
+  }
+  else {
+    gPatterns[singlePattern]();
+  }
 
   // send the 'leds' array out to the actual LED strip
   FastLED.show();

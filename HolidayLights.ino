@@ -21,8 +21,8 @@ FASTLED_USING_NAMESPACE
 #define MAX_SPEED
 #define LED_TYPE            WS2812
 #define COLOR_ORDER         GRB
-#define NUM_LEDS_FRONT      36
-#define NUM_LEDS_SIDE       36
+#define NUM_LEDS_FRONT      1200
+#define NUM_LEDS_SIDE       600
 #define NUM_LEDS (NUM_LEDS_SIDE + NUM_LEDS_FRONT)
 #define DEBUG
 
@@ -40,9 +40,9 @@ long powerCycleTime;
 */
 #include "patterns.h"
 #include "Leds.h"
-#include "Wifi.h"
-#include "web_server.h"
-#include "web_socket.h"
+//#include "Wifi.h"
+//#include "web_server.h"
+//#include "web_socket.h"
 
 
 void setup() {
@@ -54,11 +54,11 @@ void setup() {
   pinMode(THING_BOARD_BUTTON, INPUT_PULLUP);
   pinMode(PSU_CONTROL_PIN, OUTPUT);
 
-  setupWifi(); // some delay for WS2812 recovery
+  //setupWifi(); // some delay for WS2812 recovery
 
-  setupWebServer();
+  //setupWebServer();
 
-  setupWebSocket();
+  //setupWebSocket();
 
   setupLeds();
 }
@@ -108,8 +108,8 @@ void setPsu() {
 
 void loop()
 {
-  ledsLoop();
-  webSocketLoop();
-  webServerLoop();
-  setPsu();
+  ledsLoop(4);
+ // webSocketLoop();
+ // webServerLoop();
+ // setPsu();
 }
