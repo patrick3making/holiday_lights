@@ -8,15 +8,17 @@ FASTLED_USING_NAMESPACE
 #define THING_BOARD_BUTTON  0
 #define THING_BOARD_LED     5
 #define PSU_CONTROL_PIN     13
-#define DATA_PIN_FRONT      18
-#define DATA_PIN_SIDE       23
+#define DATA_PIN_RIGHT      23
+#define DATA_PIN_LEFT       17
+#define CLOCK_PIN_RIGHT     18
+#define CLOCK_PIN_LEFT      16
 #define IIC_CLK             22
 #define IIC_DATA            21
 
 /*
    Precompiler settings
 */
-#define BRIGHTNESS          96
+#define BRIGHTNESS          255
 #define FRAMES_PER_SECOND   30
 #define MAX_SPEED
 #define LED_TYPE            WS2812
@@ -40,28 +42,9 @@ long powerCycleTime;
 */
 #include "patterns.h"
 #include "Leds.h"
-//#include "Wifi.h"
-//#include "web_server.h"
-//#include "web_socket.h"
-
-
-void setup() {
-  powerCycleTime = millis();
-  Serial.begin(115200);
-  Serial.println("Holiday Lights");
-
-  pinMode(THING_BOARD_LED, OUTPUT);
-  pinMode(THING_BOARD_BUTTON, INPUT_PULLUP);
-  pinMode(PSU_CONTROL_PIN, OUTPUT);
-
-  //setupWifi(); // some delay for WS2812 recovery
-
-  //setupWebServer();
-
-  //setupWebSocket();
-
-  setupLeds();
-}
+#include "Wifi.h"
+#include "web_server.h"
+#include "web_socket.h"
 
 void powerSupplyOn() {
   if (digitalRead(PSU_CONTROL_PIN) == HIGH) {
@@ -106,10 +89,30 @@ void setPsu() {
   }
 }
 
+void setup() {
+  powerCycleTime = millis();
+  Serial.begin(9600);
+  Serial.println("Holiday Lights");
+
+  pinMode(THING_BOARD_LED, OUTPUT);
+  pinMode(THING_BOARD_BUTTON, INPUT_PULLUP);
+  pinMode(PSU_CONTROL_PIN, OUTPUT);
+
+  powerSupplyOff();
+
+  setupWifi(); // some delay for WS2812 recovery
+
+  setupWebServer();
+
+  //setupWebSocket();
+
+  setupLeds();
+}
+
 void loop()
 {
   ledsLoop(4);
- // webSocketLoop();
- // webServerLoop();
- // setPsu();
+  //webSocketLoop();
+  webServerLoop();
+  setPsu();
 }
