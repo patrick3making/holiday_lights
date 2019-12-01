@@ -21,7 +21,7 @@ void setupWebServer() {
   });
   
   server.on("/", [] {
-    server.send(200, "text/html", homePage());
+    server.send(200, "text/html", (String)homePage());
   });
 
   server.begin();

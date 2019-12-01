@@ -44,7 +44,6 @@ long powerCycleTime;
 #include "Leds.h"
 #include "Wifi.h"
 #include "web_server.h"
-#include "web_socket.h"
 
 void powerSupplyOn() {
   if (digitalRead(PSU_CONTROL_PIN) == HIGH) {
@@ -104,15 +103,12 @@ void setup() {
 
   setupWebServer();
 
-  //setupWebSocket();
-
   setupLeds();
 }
 
 void loop()
 {
   ledsLoop(4);
-  //webSocketLoop();
   webServerLoop();
   setPsu();
 }

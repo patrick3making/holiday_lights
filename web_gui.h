@@ -1,32 +1,38 @@
-void replaceAll(std::string& str, const std::string& from, const std::string& to) {
-  if (from.empty())
-    return;
-  size_t start_pos = 0;
-  while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
-    str.replace(start_pos, from.length(), to);
-    start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
-  }
-}
 
-void webPrintWebSocketScript(WiFiClient *client) {
-  client->print("\
-<script>var connection = new WebSocket('ws://");
-  client->print(WiFi.localIP());
-  client->print("\
-:81/', ['arduino']);\
-connection.onopen = function () {  connection.send('Connect ' + new Date()); }; \
-connection.onerror = function (error) {    console.log('WebSocket Error ', error);};\
-connection.onmessage = function (e) {  console.log('Server: ', e.data);};\
-function sendRGB(jscolor) {  var rgb = '#'+jscolor;\
-console.log('RGB: ' + rgb); \
-connection.send(rgb); }\
-function sendPatternSelection(selection){ var pattern = '@'+selection;\
-console.log('Pattern: ' + pattern);\
-connection.send(pattern);}\
-</script>\
-<script src=\"https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.0.4/jscolor.min.js\"></script>\
-  ");
-}
+char *replaceAll( char *page,  char *seach,  char *replace) 
+{ 
+    char *result; 
+    int i, cnt = 0; 
+    int newWlen = strlen(replace); 
+    int oldWlen = strlen(seach); 
+  
+    for (i = 0; page[i] != '\0'; i++) 
+    { 
+        if (strstr(&page[i], seach) == &page[i]) 
+        { 
+            cnt++; 
+            i += oldWlen - 1; 
+        } 
+    } 
+
+    result = (char *)malloc(i + cnt * (newWlen - oldWlen) + 1); 
+  
+    i = 0; 
+    while (*page) 
+    { 
+        if (strstr(page, seach) == page) 
+        { 
+            strcpy(&result[i], replace); 
+            i += newWlen; 
+            page += oldWlen; 
+        } 
+        else
+            result[i++] = *page++; 
+    } 
+  
+    result[i] = '\0'; 
+    return result; 
+} 
 
 String htmlPatternSelector() {
   String selectorHtml = "<br/><p>Pattern Selector</p><select onchange=sendPatternSelection(this.value)>";
@@ -57,7 +63,7 @@ void webPrintHtmlBody(WiFiClient *client) {
   client->println();
 }
 
-const char PROGMEM pageBase[] = R"=====(<!DOCTYPE html>
+char PROGMEM *pageBase = R"=====(<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -70,43 +76,12 @@ const char PROGMEM pageBase[] = R"=====(<!DOCTYPE html>
   <meta name="description" content="{{description}}">
   <meta name="author" content="patrick3making">
 
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-
 </head>
 
 <body>
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-md-12">
-        <header class="page-header bg-primary text-white">
-          <h1 class="text-center">Holiday Lights</h1>
-          <nav class="bg-secondary">
-            <ul class="nav text-white">
-              <li class="nav-item">
-                <a class="nav-link active text-white" href="/">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link text-white" href="/schedule">Schedule</a>
-              </li>
-              <li class="nav-item dropdown ml-md-auto">
-                <a class="nav-link dropdown-toggle text-white" href="/info" id="navbarDropdownMenuLink" data-toggle="dropdown">System</a>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                  <a class="dropdown-item" href="/settings">Settings</a>
-                  <a class="dropdown-item" href="/info">Info</a>
-                  <div class="dropdown-divider">
-                  </div> <a class="dropdown-item" href="/about">About</a>
-                </div>
-              </li>
-            </ul>
-          </nav>
+        <header>
+          <h1 >Holiday Lights</h1>
         </header>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12">
         <main>
           <h2>{{title}}</h2>
           {{content}}
@@ -118,8 +93,15 @@ const char PROGMEM pageBase[] = R"=====(<!DOCTYPE html>
 
 </html>)=====";
 
+String homePage(char *title, char *description, char *content) {
+  char *page = pageBase;
+  page = replaceAll(page, "{{title}}", title);
+  page = replaceAll(page, "{{description}}", description);
+  page = replaceAll(page, "{{content}}", content);
+  return page;
+}
+
 String homePage() {
-  String page;
-  page = pageBase;
+  String page = homePage("Welcome", "The landing page for the Holiday Lights controller", "<p>Holiday Lights Controller</p>");
   return page;
 }
