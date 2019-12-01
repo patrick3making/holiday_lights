@@ -21,7 +21,42 @@ void setupWebServer() {
   });
   
   server.on("/", [] {
-    server.send(200, "text/html", (String)homePage());
+    server.send(200, "text/html", homePage());
+  });
+  
+  server.on("/pattern", [] {
+    int newSelection, returnCode;
+    if(server.hasArg("pattern")){
+      newSelection = atoi(server.arg("pattern"));
+      if( newSelection < ARRAY_SIZE(gPatterns)){
+        gCurrentPatternNumber = newSelection;
+        returnCode = 200;
+      }
+      else{
+        returnCode = 501;
+      }
+    }
+    server.send(returnCode, "text/html", patternPage(returnCode));
+  });
+  
+  server.on("/power", [] {
+    String state;
+    if(server.hasArg("state")){
+      if(server.arg("state") == "on"){
+        powerOn = true;
+      }
+      else if(server.arg("state") == "toggle"){
+        powerOn = !powerOn;
+      }
+      else{
+        powerOn = false;
+      }
+      server.send(200, "text/html", "<p>Success</p>");
+    }
+    else{
+      server.send(400, "text/html", "<p>no state specified</p>");
+    }
+
   });
 
   server.begin();

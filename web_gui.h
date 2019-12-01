@@ -1,14 +1,14 @@
 
-char *replaceAll( char *page,  char *seach,  char *replace) 
+char *replaceAll( char *page,  char *search,  char *replace) 
 { 
     char *result; 
     int i, cnt = 0; 
     int newWlen = strlen(replace); 
-    int oldWlen = strlen(seach); 
+    int oldWlen = strlen(search); 
   
     for (i = 0; page[i] != '\0'; i++) 
     { 
-        if (strstr(&page[i], seach) == &page[i]) 
+        if (strstr(&page[i], search) == &page[i]) 
         { 
             cnt++; 
             i += oldWlen - 1; 
@@ -20,7 +20,7 @@ char *replaceAll( char *page,  char *seach,  char *replace)
     i = 0; 
     while (*page) 
     { 
-        if (strstr(page, seach) == page) 
+        if (strstr(page, search) == page) 
         { 
             strcpy(&result[i], replace); 
             i += newWlen; 
@@ -34,33 +34,28 @@ char *replaceAll( char *page,  char *seach,  char *replace)
     return result; 
 } 
 
-String htmlPatternSelector() {
-  String selectorHtml = "<br/><p>Pattern Selector</p><select onchange=sendPatternSelection(this.value)>";
-
-  for (int p = 0; p < ARRAY_SIZE( gPatterns); p++) {
-    selectorHtml += "<option value=\"" + String(p) + "\"";
-    if ( p == gCurrentPatternNumber) {
-      selectorHtml += " selected";
-    }
-    selectorHtml += ">" + gPatternNames[p] + "</option>";
+char *htmlPatternSelector(bool error) {
+  char *selectorHtml;
+  if (error){
+    strcat(selectorHtml,"<h2>Selected Pattern Not Available</h2><br/>")
   }
-  selectorHtml += "</select>";
+  strcat(selectorHtml, "<form action=\"/pattern\" method=\"get\"><br/><p>Pattern Selector</p><select name=\"pattern\">");
+
+  for (int patternItem = 0; patternItem < ARRAY_SIZE( gPatterns); patternItem++) {
+    strcat(selectorHtml,"<option value=\"");
+    char index[2];
+    strcat(selectorHtml, itoa(patternItem, index, 10));
+    strcat(selectorHtml, "\"");
+    if ( patternItem == gCurrentPatternNumber) {
+      strcat(selectorHtml, " selected");
+    }
+    strcat(selectorHtml, ">");
+    strcat(selectorHtml, gPatternNames[patternItem]);
+    strcat(selectorHtml, "</option>");
+  }
+  strcat(selectorHtml, "</select></br><input type=\"submit\" value=\"Make it so\"></form>");
 
   return selectorHtml;
-}
-
-void webPrintHtmlBody(WiFiClient *client) {
-  client->print("<body><h1>LED Control</h1><br/>\
-  <p>Color picker</p><input class=\"jscolor {closable:true,closeText:'Close'}\" onchange=\"sendRGB(this.jscolor)\"  value=\"398085\">\
-  ");
-  client->print(htmlPatternSelector());
-  client->println("\
-<br/> \
-</body> \
-</html> \
-");
-  // The HTTP response ends with another blank line
-  client->println();
 }
 
 char PROGMEM *pageBase = R"=====(<!DOCTYPE html>
@@ -93,7 +88,7 @@ char PROGMEM *pageBase = R"=====(<!DOCTYPE html>
 
 </html>)=====";
 
-String homePage(char *title, char *description, char *content) {
+char *pageBuilder(char *title, char *description, char *content) {
   char *page = pageBase;
   page = replaceAll(page, "{{title}}", title);
   page = replaceAll(page, "{{description}}", description);
@@ -102,6 +97,42 @@ String homePage(char *title, char *description, char *content) {
 }
 
 String homePage() {
-  String page = homePage("Welcome", "The landing page for the Holiday Lights controller", "<p>Holiday Lights Controller</p>");
+  String page = pageBuilder("Welcome", "The landing page for the Holiday Lights controller", "<p>Holiday Lights Controller</p>");
   return page;
 }
+
+String patternPage(int returnCode) {
+  bool error = true;
+  if (returnCode != 200){
+    error = false;
+  }
+  char *patternSelector = htmlPatternSelector(error);
+  String page = pageBuilder("Pattern", "Select a pattern", patternSelector);
+  return page;
+}
+
+char *powerPage(bool alteration){
+  char *powerStatus;
+  strcat(powerStatus, "The power is ");
+  char *message;
+  if( powerOn){
+    strcat(powerStatus, "on");
+  }
+  else
+  {
+    strcat(powerStatus, "off");
+  }
+  
+  if(alteration){
+    strcat(message, "<h1>Sucessfully set power state.</h1></br>");
+  }
+
+  strcat(message, "<p>");
+  strcat(message, powerStatus);
+  strcat(message, "</p>");
+
+  char *page;
+  page = pageBuilder("Power", powerStatus, message);
+  return page;
+}
+

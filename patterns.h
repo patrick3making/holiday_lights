@@ -78,7 +78,7 @@ void juggle()
 }
 
 SimplePatternList gPatterns = {confetti, sinelon, juggle, bpm, halloweenconfetti};
-String gPatternNames[] = {"confetti", "sinelon", "juggle", "bpm", "halloweenconfetti"};
+char *gPatternNames[] = {"confetti", "sinelon", "juggle", "bpm", "halloweenconfetti"};
 
 void nextPattern()
 {

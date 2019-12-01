@@ -70,6 +70,7 @@ void powerSupplyOff() {
 void setPsu() {
   // don't toggle power within less than 3 seconds
   if ( millis() - powerCycleTime > 3000) {
+
     if (digitalRead(THING_BOARD_BUTTON) == LOW) {
       //delay(10);
       powerOn = !powerOn;
@@ -79,6 +80,7 @@ void setPsu() {
       Serial.println(powerOn);
 #endif
     }
+    
     if (powerOn) {
       powerSupplyOn();
     }
