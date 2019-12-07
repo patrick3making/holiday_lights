@@ -80,7 +80,7 @@ void setPsu() {
       Serial.println(powerOn);
 #endif
     }
-    
+
     if (powerOn) {
       powerSupplyOn();
     }
@@ -110,7 +110,7 @@ void setup() {
 
 void loop()
 {
-  ledsLoop(4);
+  ledsLoop(0);
   webServerLoop();
   setPsu();
 }
