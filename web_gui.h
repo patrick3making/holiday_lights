@@ -1,64 +1,32 @@
 
-char *replaceAll( char *page,  char *search,  char *replace) 
-{ 
-    char *result; 
-    int i, cnt = 0; 
-    int newWlen = strlen(replace); 
-    int oldWlen = strlen(search); 
-  
-    for (i = 0; page[i] != '\0'; i++) 
-    { 
-        if (strstr(&page[i], search) == &page[i]) 
-        { 
-            cnt++; 
-            i += oldWlen - 1; 
-        } 
-    } 
-
-    result = (char *)malloc(i + cnt * (newWlen - oldWlen) + 1); 
-  
-    i = 0; 
-    while (*page) 
-    { 
-        if (strstr(page, search) == page) 
-        { 
-            strcpy(&result[i], replace); 
-            i += newWlen; 
-            page += oldWlen; 
-        } 
-        else
-            result[i++] = *page++; 
-    } 
-  
-    result[i] = '\0'; 
-    return result; 
-} 
-
-char *htmlPatternSelector(bool error) {
-  char *selectorHtml;
+std::string htmlPatternSelector(bool error) {
+#ifdef DEBUG
+  Serial.println("pattern selector");
+#endif
+  std::string selectorHtml = "";
   if (error){
-    strcat(selectorHtml,"<h2>Selected Pattern Not Available</h2><br/>")
+    selectorHtml += "<h2>Selected Pattern Not Available</h2><br/>";
   }
-  strcat(selectorHtml, "<form action=\"/pattern\" method=\"get\"><br/><p>Pattern Selector</p><select name=\"pattern\">");
+  selectorHtml += "<form action=\"/pattern\" method=\"get\"><br/><p>Pattern Selector</p><select name=\"pattern\">";
 
   for (int patternItem = 0; patternItem < ARRAY_SIZE( gPatterns); patternItem++) {
-    strcat(selectorHtml,"<option value=\"");
+    selectorHtml += "<option value=\"";
     char index[2];
-    strcat(selectorHtml, itoa(patternItem, index, 10));
-    strcat(selectorHtml, "\"");
+    selectorHtml += itoa(patternItem, index, 10);
+    selectorHtml += "\"";
     if ( patternItem == gCurrentPatternNumber) {
-      strcat(selectorHtml, " selected");
+      selectorHtml += " selected";
     }
-    strcat(selectorHtml, ">");
-    strcat(selectorHtml, gPatternNames[patternItem]);
-    strcat(selectorHtml, "</option>");
+    selectorHtml += ">";
+    selectorHtml += gPatternNames[patternItem];
+    selectorHtml += "</option>";
   }
-  strcat(selectorHtml, "</select></br><input type=\"submit\" value=\"Make it so\"></form>");
+  selectorHtml += "</select></br><input type=\"submit\" value=\"Make it so\"></form>";
 
   return selectorHtml;
 }
 
-char PROGMEM *pageBase = R"=====(<!DOCTYPE html>
+char const PROGMEM *pageBase = R"=====(<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -88,51 +56,67 @@ char PROGMEM *pageBase = R"=====(<!DOCTYPE html>
 
 </html>)=====";
 
-char *pageBuilder(char *title, char *description, char *content) {
-  char *page = pageBase;
-  page = replaceAll(page, "{{title}}", title);
-  page = replaceAll(page, "{{description}}", description);
-  page = replaceAll(page, "{{content}}", content);
+
+std::string templateReplace(std::string pageTemplate, std::string templateField, std::string replacement){
+  bool keepSearching = true;
+  while(keepSearching){
+    int foundIndex = pageTemplate.find(templateField);
+    if(foundIndex!=std::string::npos){
+      pageTemplate.replace(foundIndex,templateField.length(),replacement);
+    }
+    else{
+      keepSearching = false;
+    }
+  }
+
+  return pageTemplate;
+}
+
+std::string pageBuilder(std::string title, std::string description, std::string content) {
+  std::string page = pageBase;
+  page = templateReplace(page, "{{title}}", title);
+  page = templateReplace(page, "{{description}}", description);
+  page = templateReplace(page, "{{content}}", content);
   return page;
 }
 
 String homePage() {
-  String page = pageBuilder("Welcome", "The landing page for the Holiday Lights controller", "<p>Holiday Lights Controller</p>");
-  return page;
+  std::string page = pageBuilder("Welcome", "The landing page for the Holiday Lights controller", "<p>Holiday Lights Controller</p>");
+  return page.c_str();
 }
 
 String patternPage(int returnCode) {
   bool error = true;
-  if (returnCode != 200){
+  if (returnCode = 200){
     error = false;
   }
-  char *patternSelector = htmlPatternSelector(error);
-  String page = pageBuilder("Pattern", "Select a pattern", patternSelector);
-  return page;
+  std::string patternSelector = htmlPatternSelector(error);
+  std::string page = pageBuilder("Pattern", "Select a pattern", patternSelector);
+  return page.c_str();
 }
 
-char *powerPage(bool alteration){
-  char *powerStatus;
-  strcat(powerStatus, "The power is ");
-  char *message;
+String powerPage(int returnCode){
+  std::string powerStatus;
+  powerStatus += "The power is ";
+  std::string message;
   if( powerOn){
-    strcat(powerStatus, "on");
+    powerStatus += "on";
   }
   else
   {
-    strcat(powerStatus, "off");
+    powerStatus += "off";
   }
   
-  if(alteration){
-    strcat(message, "<h1>Sucessfully set power state.</h1></br>");
+  if(returnCode == 200){
+    message += "<h1>Sucessfully set power state.</h1></br>";
   }
 
-  strcat(message, "<p>");
-  strcat(message, powerStatus);
-  strcat(message, "</p>");
+  message += "<p>";
+  message += powerStatus;
+  message += "</p>";
 
-  char *page;
+  std::string page;
   page = pageBuilder("Power", powerStatus, message);
-  return page;
+  return page.c_str();
 }
 
