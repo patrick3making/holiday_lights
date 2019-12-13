@@ -47,7 +47,8 @@ void setupWebServer()
 #ifdef DEBUG
     Serial.print("pattern page ... ");
 #endif
-    int newSelection, returnCode;
+    int newSelection;
+    int returnCode;
     if (server.hasArg("pattern"))
     {
       String patternArg = server.arg("pattern");
