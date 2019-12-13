@@ -8,8 +8,8 @@ FASTLED_USING_NAMESPACE
 #define THING_BOARD_BUTTON  0
 #define THING_BOARD_LED     5
 #define PSU_CONTROL_PIN     13
-#define DATA_PIN_RIGHT      23
-#define DATA_PIN_LEFT       17
+#define DATA_PIN_RIGHT      5  //23
+#define DATA_PIN_LEFT       2  //17
 #define CLOCK_PIN_RIGHT     18
 #define CLOCK_PIN_LEFT      16
 #define IIC_CLK             22
@@ -21,18 +21,18 @@ FASTLED_USING_NAMESPACE
 #define BRIGHTNESS          255
 #define FRAMES_PER_SECOND   30
 #define MAX_SPEED
-#define LED_TYPE            WS2812
+#define LED_TYPE            WS2812B
 #define COLOR_ORDER         GRB
-#define NUM_LEDS_FRONT      1200
-#define NUM_LEDS_SIDE       600
-#define NUM_LEDS (NUM_LEDS_SIDE + NUM_LEDS_FRONT)
+#define NUM_LEDS_RIGHT      1200
+#define NUM_LEDS_LEFT       600
+#define NUM_LEDS (NUM_LEDS_LEFT + NUM_LEDS_RIGHT)
 #define DEBUG
 
 /*
    Global Variables
 */
-CRGB leds_front[NUM_LEDS_FRONT];
-CRGB leds_side[NUM_LEDS_SIDE];
+CRGB leds_right[NUM_LEDS_RIGHT];
+CRGB leds_left[NUM_LEDS_LEFT];
 CRGB *leds[NUM_LEDS];
 bool powerOn = false;
 long powerCycleTime;
@@ -110,7 +110,7 @@ void setup() {
 
 void loop()
 {
-  ledsLoop(0);
+  ledsLoop();
   webServerLoop();
   setPsu();
 }

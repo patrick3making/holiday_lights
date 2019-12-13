@@ -3,17 +3,17 @@ void fillLedArray(){
   Serial.print("  fill array with pointers...");
 #endif
   int addr = 0;
-  for (int side = NUM_LEDS_SIDE - 1; side >= 0; side--)
+  for (int left = NUM_LEDS_LEFT - 1; left >= 0; left--)
   {
-    leds[addr] = &leds_side[side];
+    leds[addr] = &leds_left[left];
     addr++;
 #ifdef DEBUG
     Serial.print(".");
 #endif
   }
-  for (int front = 0; front < NUM_LEDS_FRONT; front++)
+  for (int right = 0; right < NUM_LEDS_RIGHT; right++)
   {
-    leds[addr] = &leds_front[front];
+    leds[addr] = &leds_right[right];
     addr++;
 #ifdef DEBUG
     Serial.print(",");
@@ -26,24 +26,25 @@ void fillLedArray(){
 
 void setupLeds()
 {
-  fillLedArray();
 #ifdef DEBUG
   Serial.print("Setup LEDs");
 #endif
+  fillLedArray();
   // tell FastLED about the LED strip configuration
-  FastLED.addLeds<LED_TYPE, DATA_PIN_RIGHT, COLOR_ORDER>(leds_front, NUM_LEDS).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<LED_TYPE, DATA_PIN_LEFT, COLOR_ORDER>(leds_side, NUM_LEDS).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<LED_TYPE, DATA_PIN_RIGHT, COLOR_ORDER>(leds_right, NUM_LEDS_RIGHT).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<LED_TYPE, DATA_PIN_LEFT, COLOR_ORDER>(leds_left, NUM_LEDS_LEFT).setCorrection(TypicalLEDStrip);
 
   // set master brightness control
   FastLED.setBrightness(BRIGHTNESS);
 #ifdef DEBUG
+  Serial.println("");
   Serial.print("  set brightness: ");
   Serial.println(BRIGHTNESS);
   Serial.println("complete");
 #endif
 }
 
-void ledsLoop(uint8_t singlePattern)
+void ledsLoop(uint8_t singlePattern = 255)
 {
   if (singlePattern == 255)
   {
@@ -67,4 +68,5 @@ void ledsLoop(uint8_t singlePattern)
   {
     gHue++; // slowly cycle the "base color" through the rainbow
   }
+
 }
