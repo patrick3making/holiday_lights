@@ -45,6 +45,19 @@ char const PROGMEM *pageBase = R"=====(<!DOCTYPE html>
         <header>
           <h1 >Holiday Lights</h1>
         </header>
+        <nav>
+          <ul>
+            <li>
+              <a href="/home">Home</a>
+            </li>
+            <li>
+              <a href="/pattern">Pattern</a>
+            </li>
+            <li>
+              <a href="/power">Power</a>
+            </li>
+          </ul>
+        </nav>
         <main>
           <h2>{{title}}</h2>
           {{content}}
