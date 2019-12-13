@@ -19,8 +19,11 @@ void confetti()
 {
   // random colored speckles that blink in and fade smoothly
   fadePointerArrayToBlackBy(10);
-  int pos = random16(NUM_LEDS);
-  *leds[pos] += CHSV(gHue + random8(64), 200, 255);
+  for (int dot = 1; dot < NUM_LEDS / 100; dot++)
+  {
+    int pos = random16(NUM_LEDS);
+    *leds[pos] += CHSV(gHue + random8(64), 200, 255);
+  }
 }
 
 void halloweenconfetti()
