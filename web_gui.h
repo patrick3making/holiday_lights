@@ -108,19 +108,20 @@ String patternPage(int returnCode) {
   return page.c_str();
 }
 
-String powerPage(int returnCode){
+String powerPage(bool success){
   std::string powerStatus;
   std::string message;
+  
+  if(success){
+    message += "<h1>Sucessfully set power state.</h1></br>";
+  }
+  
   if( powerOn){
     powerStatus += "<p>The power is on</p><br><button onclick=\"window.location.href = '/power?state=off';\">Power off</button>";
   }
   else
   {
     powerStatus += "<p>The power is off</p><br><button onclick=\"window.location.href = '/power?state=on';\">Power on</button>";
-  }
-  
-  if(returnCode == 200){
-    message += "<h1>Sucessfully set power state.</h1></br>";
   }
 
   message += powerStatus;

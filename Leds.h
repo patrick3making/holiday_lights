@@ -1,25 +1,26 @@
 void fillLedArray(){
 #ifdef DEBUG
-  Serial.print("  fill array with pointers...");
+  Serial.println("  fill array with pointers...");
 #endif
   int addr = 0;
   for (int left = NUM_LEDS_LEFT - 1; left >= 0; left--)
   {
     leds[addr] = &leds_left[left];
     addr++;
-#ifdef DEBUG
-    Serial.print(".");
-#endif
   }
+
+#ifdef DEBUG
+  Serial.print("Left: ");
+  Serial.println(addr);
+#endif
   for (int right = 0; right < NUM_LEDS_RIGHT; right++)
   {
     leds[addr] = &leds_right[right];
     addr++;
-#ifdef DEBUG
-    Serial.print(",");
-#endif
   }
 #ifdef DEBUG
+  Serial.print("Right: ");
+  Serial.println(addr);
   Serial.println("done");
 #endif
 }

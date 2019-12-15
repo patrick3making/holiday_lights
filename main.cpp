@@ -8,8 +8,8 @@ FASTLED_USING_NAMESPACE
 #define THING_BOARD_BUTTON  0
 #define THING_BOARD_LED     5
 #define PSU_CONTROL_PIN     13
-#define DATA_PIN_RIGHT      5  //23
-#define DATA_PIN_LEFT       2  //17
+#define DATA_PIN_RIGHT      16  //23
+#define DATA_PIN_LEFT       17  //17
 #define CLOCK_PIN_RIGHT     18
 #define CLOCK_PIN_LEFT      16
 #define IIC_CLK             22

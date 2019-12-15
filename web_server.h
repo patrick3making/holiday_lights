@@ -80,6 +80,8 @@ void setupWebServer()
     Serial.print("power page ... ");
 #endif
     String state;
+    bool success = true;
+    int returnCode = 200;
     if (server.hasArg("state"))
     {
       if (server.arg("state") == "on")
@@ -90,16 +92,16 @@ void setupWebServer()
       {
         powerOn = !powerOn;
       }
-      else
+      else if (server.arg("state") == "off")
       {
         powerOn = false;
       }
-      server.send(200, "text/html", "<p>Success</p>");
+      else{
+        success = false;
+        returnCode = 400;
+      }
     }
-    else
-    {
-      server.send(400, "text/html", "<p>no state specified</p>");
-    }
+      server.send(returnCode, "text/html", powerPage(success));
 #ifdef DEBUG
     Serial.println("done");
 #endif
