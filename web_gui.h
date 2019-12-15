@@ -1,6 +1,6 @@
 
 std::string htmlPatternSelector(bool error) {
-#ifdef DEBUG
+#ifdef WEB_GUI_DEBUG
   Serial.println("pattern selector");
 #endif
   std::string selectorHtml = "";
@@ -115,7 +115,7 @@ String powerPage(bool success){
   if(success){
     message += "<h1>Sucessfully set power state.</h1></br>";
   }
-  
+
   if( powerOn){
     powerStatus += "<p>The power is on</p><br><button onclick=\"window.location.href = '/power?state=off';\">Power off</button>";
   }

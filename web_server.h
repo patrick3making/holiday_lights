@@ -9,42 +9,42 @@ String clientHeader;
 
 void setupWebServer()
 {
-#ifdef DEBUG
+#ifdef WEB_SERVER_DEBUG
   Serial.print("Setup Web Server");
 #endif
 
   server.on("js/scripts.js", [] {
-#ifdef DEBUG
+#ifdef WEB_SERVER_DEBUG
     Serial.print("scripts.js ... ");
 #endif
     server.send_P(200, "text/css", scriptsJs);
-#ifdef DEBUG
+#ifdef WEB_SERVER_DEBUG
     Serial.println("done");
 #endif
   });
 
   server.on("css/style.css", [] {
-#ifdef DEBUG
+#ifdef WEB_SERVER_DEBUG
     Serial.print("style.css ... ");
 #endif
     server.send_P(200, "text/css", styleCss);
-#ifdef DEBUG
+#ifdef WEB_SERVER_DEBUG
     Serial.println("done");
 #endif
   });
 
   server.on("/", [] {
-#ifdef DEBUG
+#ifdef WEB_SERVER_DEBUG
     Serial.print("home page ... ");
 #endif
     server.send(200, "text/html", homePage());
-#ifdef DEBUG
+#ifdef WEB_SERVER_DEBUG
     Serial.println("done");
 #endif
   });
 
   server.on("/pattern", [] {
-#ifdef DEBUG
+#ifdef WEB_SERVER_DEBUG
     Serial.print("pattern page ... ");
 #endif
     int newSelection;
@@ -57,7 +57,7 @@ void setupWebServer()
       {
         gCurrentPatternNumber = newSelection;
         returnCode = 200;
-#ifdef DEBUG
+#ifdef WEB_SERVER_DEBUG
         Serial.print("selected ");
         Serial.print(newSelection);
         Serial.print(" ... ");
@@ -70,13 +70,13 @@ void setupWebServer()
     }
     String page = patternPage(returnCode);
     server.send(returnCode, "text/html", page.c_str());
-#ifdef DEBUG
+#ifdef WEB_SERVER_DEBUG
     Serial.println("done");
 #endif
   });
 
   server.on("/power", [] {
-#ifdef DEBUG
+#ifdef WEB_SERVER_DEBUG
     Serial.print("power page ... ");
 #endif
     String state;
@@ -102,14 +102,14 @@ void setupWebServer()
       }
     }
       server.send(returnCode, "text/html", powerPage(success));
-#ifdef DEBUG
+#ifdef WEB_SERVER_DEBUG
     Serial.println("done");
 #endif
   });
 
   server.begin();
 
-#ifdef DEBUG
+#ifdef WEB_SERVER_DEBUG
   Serial.println("done");
 #endif
 }

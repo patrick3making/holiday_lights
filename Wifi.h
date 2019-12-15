@@ -8,7 +8,7 @@
 //const char* password = "Password";
 
 void setupWifi() {
-#ifdef DEBUG
+#ifdef WIFI_DEBUG
   Serial.print("Setup WiFi");
 #endif
 

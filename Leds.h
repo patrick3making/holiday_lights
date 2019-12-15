@@ -1,5 +1,5 @@
 void fillLedArray(){
-#ifdef DEBUG
+#ifdef LEDS_DEBUG
   Serial.println("  fill array with pointers...");
 #endif
   int addr = 0;
@@ -9,7 +9,7 @@ void fillLedArray(){
     addr++;
   }
 
-#ifdef DEBUG
+#ifdef LEDS_DEBUG
   Serial.print("Left: ");
   Serial.println(addr);
 #endif
@@ -18,7 +18,7 @@ void fillLedArray(){
     leds[addr] = &leds_right[right];
     addr++;
   }
-#ifdef DEBUG
+#ifdef LEDS_DEBUG
   Serial.print("Right: ");
   Serial.println(addr);
   Serial.println("done");
@@ -27,7 +27,7 @@ void fillLedArray(){
 
 void setupLeds()
 {
-#ifdef DEBUG
+#ifdef LEDS_DEBUG
   Serial.print("Setup LEDs");
 #endif
   fillLedArray();
@@ -37,7 +37,7 @@ void setupLeds()
 
   // set master brightness control
   FastLED.setBrightness(BRIGHTNESS);
-#ifdef DEBUG
+#ifdef LEDS_DEBUG
   Serial.println("");
   Serial.print("  set brightness: ");
   Serial.println(BRIGHTNESS);
